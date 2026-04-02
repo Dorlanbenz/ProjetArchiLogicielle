@@ -34,22 +34,30 @@ def creercagnotte():
 
 
 def supprimercagnotte():
-    liste = lister()
-    if not liste:
-        click.echo("Aucune cagnotte à supprimer")
-        return
+    while True:
+        liste = lister()
+        if not liste:
+            click.echo("Aucune cagnotte à supprimer")
+            return
 
-    name = click.prompt('Nom de la cagnotte à supprimer')
-    supprimer(name)
-    click.echo(f"cagnotte '{name}' supprimée")
-    choix = click.prompt(
-        "1 : supprimer une autre cagnotte\n"
-        "2 : Retour au menu\n"
-        "Votre choix",
-        type=click.Choice(["1", "2"])
-    )
-    if choix == "1":
-        _supprimer_cagnotte()
+        while True:
+            name = click.prompt('Nom de la cagnotte à supprimer')
+            noms = [item.nom for item in liste]
+            if name not in noms:
+                click.echo(f"Aucune cagnotte '{name}' trouvée, réessayez")
+            else:
+                break
+
+        supprimer(name)
+        click.echo(f"Cagnotte '{name}' supprimée")
+        choix = click.prompt(
+            "1 : Supprimer une autre cagnotte\n"
+            "2 : Retour au menu\n"
+            "Votre choix",
+            type=click.Choice(["1", "2"])
+        )
+        if choix == "2":
+            break  # retour au menu
 
 
 
@@ -61,9 +69,9 @@ def listercagnottes():
                 type=click.Choice(["créer une cagnotte", "supprimer une cagnotte" ,"quitter"]))
 
         if choix == "créer une cagnotte":
-            creercagnotte()
+            _creer_cagnotte()
         elif choix == "supprimer une cagnotte":
-            supprimercagnotte()
+            _supprimer_cagnotte()
         return
 
     click.echo("Les différentes Cagnottes : ")
