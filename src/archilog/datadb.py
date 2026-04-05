@@ -1,6 +1,8 @@
 import uuid
 from sqlalchemy import create_engine, MetaData, Table, Column, String, Float, Date, ForeignKey, Uuid, delete, insert, update
 
+
+
 engine = create_engine("sqlite:///data.db", echo=False)
 metadata = MetaData()
 
@@ -34,7 +36,11 @@ def lister():
     with engine.begin() as conn:
         return conn.execute(cagnotte_table.select()).fetchall()
 
+
 def supprimer(nom):
     with engine.begin() as conn:
-        conn.execute(delete(cagnotte_table).where(nom == cagnotte_table.c.nom)
+        conn.execute(delete(cagnotte_table).where(cagnotte_table.c.nom == nom)
 )
+        
+
+
