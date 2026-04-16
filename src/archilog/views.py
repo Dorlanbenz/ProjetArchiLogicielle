@@ -1,8 +1,14 @@
 import click
 
-
 from archilog import *
 from archilog.domaine import *
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"
 
 @cli.command()
 def menu():
@@ -10,7 +16,7 @@ def menu():
         choix = click.prompt(
             "\nMenu principal\n"
             "1 : Créer une cagnotte\n"
-            "2 : Lister les cagnottes\n"
+            "2 : Accéder aux cagnottes\n"
             "3 : Supprimer une cagnotte\n"
             "4 : Quitter\n"
             "Votre choix",
@@ -52,8 +58,8 @@ def menu_cagnotte(cagnotte):
             break
 
 def liste_cagnotte_view():
-    cagnotte = lister_cagnottes()  # récupère la cagnotte choisie
-    if cagnotte:                   # si l'utilisateur n'a pas quitter
+    cagnotte = lister_cagnottes()  
+    if cagnotte:                   
         menu_cagnotte(cagnotte)
 
 

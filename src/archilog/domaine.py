@@ -1,6 +1,6 @@
 import click
 import uuid
-
+import datetime
 
 from dataclasses import dataclass
 from archilog.datadb import *
@@ -17,7 +17,7 @@ class Depense:
     id: uuid.UUID
     participant: str
     montant: float
-    date: str
+    date: datetime.date
     cagnotte_id: uuid.UUID
 
 
@@ -86,6 +86,7 @@ def supprimer_cagnotte():
         supprimer(name)
 
         click.echo(f"Cagnotte '{name}' supprimée")
+
         choix = click.prompt(
             "1 : Supprimer une autre cagnotte ?\n"
             "2 : Retour au menu\n"
@@ -128,14 +129,76 @@ def lister_cagnottes():
         elif choix == "2" :
             break
 
-
-
        
 def ajouter_depense(cagnotte):
-    pass
+    while True:
+        depenses = get_depense(cagnotte.id)
+        if not depenses:
+            click.echo("Aucune dépense dans cette cagnotte")
+            return
+        
+        click.echo("Dépenses :")
+        for ind, d in enumerate(depenses, start=1):
+            click.echo(f" {ind} → {d.participant} : {d.montant}€ ({d.date})")
+        
+        participant = click.prompt("Nom du participant")
+        
+        if participant_existe(cagnotte.id, participant):
+            click.echo(f"'{participant}' a déjà une dépense dans cette cagnotte")
+            continue
+        
+        montant = click.prompt("Montant", type=float)
+        date_str = click.prompt("Date (YYYY-MM-DD)")
+        date = datetime.date.fromisoformat(date_str)
+
+        dep = Depense(
+            id=uuid.uuid4(),
+            participant=participant,
+            montant=montant,
+            date=date,
+            cagnotte_id=cagnotte.id
+        )
+
+        ajout_depense(dep)
+        click.echo(f"Dépense de '{participant}' d'une valeur de '{montant} €' ajoutée")
+        
+        choix = click.prompt(
+            "1 : Ajouter une autre dépense\n"
+            "2 : Retour\n"
+            "Votre choix",
+            type=click.Choice(["1", "2"])
+        )
+        if choix == "2":
+            break
 
 def supprimer_depense(cagnotte):
-    pass
+    while True:
+        depenses = get_depense(cagnotte.id)
+        if not depenses:
+            click.echo("Aucune dépense dans cette cagnotte")
+            return
+        
+        click.echo("Dépenses :")
+        for ind, d in enumerate(depenses, start=1):
+            click.echo(f" {ind} → {d.participant} : {d.montant}€ ({d.date})")
+        
+        participant = click.prompt("Nom du participant à supprimer")
+        
+        if not participant_existe(cagnotte.id, participant):
+            click.echo(f"Aucune dépense pour '{participant}', réessayez")
+            continue
+        
+        supprimer_depense(cagnotte.id, participant)
+        click.echo(f"Dépense de '{participant}' supprimée")
+        
+        choix = click.prompt(
+            "1 : Supprimer une autre dépense\n"
+            "2 : Retour\n"
+            "Votre choix",
+            type=click.Choice(["1", "2"])
+        )
+        if choix == "2":
+            break
 
 def lister_depenses(cagnotte):
     pass
