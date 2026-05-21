@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Archilog – Mes Cagnottes{% endblock %}
+
+{% block content %}
+    <h1>Mes Cagnottes</h1>
+
+    {# ── Créer une cagnotte ── #}
+    <h2>Créer une nouvelle cagnotte</h2>
+    <form method="POST" action="{{ url_for('creer') }}">
+        <input name="nom_creer" placeholder="Nom de la cagnotte (ex : Vacances)" required>
+        <button type="submit">Créer</button>
+    </form>
+
+    {# ── Supprimer une cagnotte ── #}
+    <h2>Supprimer une cagnotte</h2>
+    <form method="POST" action="{{ url_for('supprimer') }}">
+        <input name="nom_supp" placeholder="Nom exact de la cagnotte à supprimer" required>
+        <button type="submit" class="btn-danger">Supprimer</button>
+    </form>
+
+    {# ── Liste des cagnottes existantes ── #}
+    <h2>Liste des cagnottes</h2>
+    <ul class="list-items">
+        {% if cagnottes %}
+            {% for c in cagnottes %}
+                <li>
+                    <a href="{{ url_for('detail', cid=c.id) }}">{{ c.nom }}</a>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li style="color: var(--text-muted);">Aucune cagnotte pour le moment.</li>
+        {% endif %}
+    </ul>
+{% endblock %}

@@ -7,18 +7,22 @@ engine = create_engine("sqlite:///data.db", echo=False)
 metadata = MetaData()
 
 cagnotte_table = Table(
+
     "cagnotte", metadata,
     Column("id", Uuid, primary_key=True, default=uuid.uuid4),
     Column("nom", String, nullable=False, unique=True),
+    
 )
 
 depense_table = Table(
+
     "depense", metadata,
     Column("id", Uuid, primary_key=True, default=uuid.uuid4),
     Column("participant", String, nullable=False),
     Column("montant", Float, nullable=False),
     Column("date", Date, nullable=False),
-    Column("cagnotte_id", Uuid, ForeignKey("cagnotte.id"), nullable=False),
+    Column("cagnotte_id", Uuid, ForeignKey("cagnotte.id", ondelete="CASCADE"), nullable=False),
+
 )
 
 def init_db():

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Cagnotte – {{ cagnotte.nom }}{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('index') }}" class="btn-link"> Retour aux cagnottes</a>
+    <h1>Cagnotte : {{ cagnotte.nom }}</h1>
+
+    {# ── Ajouter une dépense ── #}
+    <h2>Ajouter une dépense</h2>
+    <form method="POST" action="{{ url_for('ajouter', cid=cagnotte.id) }}">
+        <input name="participant" placeholder="Nom du participant" required>
+        <input name="montant" type="number" step="0.01" placeholder="Montant (€)" required>
+        <input name="date" type="date" value="{{ today }}" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Liste des dépenses</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th style="text-align: right;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if depenses %}
+                {% for d in depenses %}
+                    <tr>
+                        <td><strong>{{ d.participant }}</strong></td>
+                        <td><span style="color:#0f172a; font-weight:600;">{{ d.montant }} €</span></td>
+                        <td style="color: var(--text-muted);">{{ d.date }}</td>
+                        <td style="text-align: right;">
+                            <form method="POST"
+                                  action="{{ url_for('supprimer_depense_vue', cid=cagnotte.id) }}"
+                                  class="inline-form">
+                                <input type="hidden" name="participant" value="{{ d.participant }}">
+                                <button class="btn-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" style="text-align:center; color:var(--text-muted);">
+                        Aucune dépense enregistrée.
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    
+    <h2>Bilan des équilibres</h2>
+    <ul class="bilan-list">
+        {% if bilan %}
+            {% for t in bilan %}
+                <li>
+                    <strong>{{ t.de }}</strong> doit {{ t.montant }} € à
+                    <strong>{{ t.vers }}</strong>
+                </li>
+            {% endfor %}
+        {% else %}
+            <li class="empty">Tout le monde est quitte !</li>
+        {% endif %}
+    </ul>
+{% endblock %}

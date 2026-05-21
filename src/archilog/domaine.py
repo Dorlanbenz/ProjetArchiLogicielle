@@ -4,7 +4,6 @@ import datetime
 
 from dataclasses import dataclass
 from archilog.datadb import *
-"from archilog.views import *"
 
 @dataclass
 class Cagnotte:
@@ -36,8 +35,10 @@ def creer_cagnotte(nom):
 def supprimer_cagnotte(nom):
     supprimer(nom)
 
+
 def lister_cagnottes():
     return lister()
+
 
 def ajouter_depense(cagnotte_id, participant, montant, date):
     if participant_existe(cagnotte_id, participant):
@@ -46,13 +47,16 @@ def ajouter_depense(cagnotte_id, participant, montant, date):
     ajout_depense(dep)
     return dep
 
+
 def supprimer_depenses(cagnotte_id, participant):
     if not participant_existe(cagnotte_id, participant):
         raise ValueError(f"Aucune dépense pour '{participant}'")
     supprimer_depense(cagnotte_id, participant)
 
+
 def lister_depenses(cagnotte_id):
     return get_depense(cagnotte_id)
+
 
 def calculer_equilibre(cagnotte_id):
     depenses = lister_depenses(cagnotte_id)
