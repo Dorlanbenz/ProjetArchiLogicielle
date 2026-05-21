@@ -50,7 +50,7 @@ def ajout_depense(depense):
             participant=depense.participant,
             montant=depense.montant,
             date=depense.date,
-            cagnotte_id=depense.cagnotte_id
+            cagnotte_id=uuid.UUID(str(depense.cagnotte_id))
         
         ))
 
@@ -58,14 +58,14 @@ def ajout_depense(depense):
 def supprimer_depense(cagnotte_id, participant):
     with engine.begin() as conn:
         conn.execute(delete(depense_table).where(
-            depense_table.c.cagnotte_id == cagnotte_id,
+            depense_table.c.cagnotte_id == uuid.UUID(str(cagnotte_id)),
             depense_table.c.participant == participant
     ))
 
 
 def get_depense(cagnotte_id):
     with engine.begin() as conn:
-        stmt = depense_table.select().where(depense_table.c.cagnotte_id == cagnotte_id)
+        stmt = depense_table.select().where(depense_table.c.cagnotte_id == uuid.UUID(str(cagnotte_id)))
 
         return conn.execute(stmt).fetchall()
 
@@ -74,7 +74,7 @@ def participant_existe(cagnotte_id, participant):
     with engine.begin() as conn:
 
         row = conn.execute(depense_table.select().where(
-            depense_table.c.cagnotte_id == cagnotte_id,
+            depense_table.c.cagnotte_id == uuid.UUID(str(cagnotte_id)),
             depense_table.c.participant == participant
         )).fetchone()
 
@@ -85,7 +85,7 @@ def get_cagnotte(cagnotte_id):
     with engine.begin() as conn:
 
         row = conn.execute(cagnotte_table.select().where(
-            cagnotte_table.c.id == cagnotte_id
+            cagnotte_table.c.id == uuid.UUID(str(cagnotte_id))
         )).fetchone()
 
         return row
